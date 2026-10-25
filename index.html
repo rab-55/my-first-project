@@ -17,6 +17,7 @@
     .card:hover, .card:focus-visible { transform: translateY(-3px); border-color: #ff8da0; outline: none; }
     .card.owned { border-color: #72d6a1; background: #273a38; }
     .card.wanted { border-color: #ff8da0; }
+    .card img { width: 86%; height: 68%; object-fit: contain; display: block; filter: drop-shadow(0 5px 5px rgba(0,0,0,.35)); }
     .card-name { display: block; font-weight: bold; }
     .card-status { display: block; color: #a7a7b8; font-size: .85rem; margin-top: 8px; }
     .owned .card-status { color: #8de0b2; }
@@ -33,47 +34,27 @@
     <p class="hint">Click a card to toggle between Owned and Wanted. Your progress is saved in this browser.</p>
   </section>
   <main class="binder" aria-label="Pokémon cards">
-    <button class="card owned" type="button" data-card="Gengar" aria-pressed="true"><span><span class="card-name">Gengar</span><span class="card-status">Owned</span></span></button>
-    <button class="card owned" type="button" data-card="Lucario" aria-pressed="true"><span><span class="card-name">Lucario</span><span class="card-status">Owned</span></span></button>
-    <button class="card owned" type="button" data-card="Gardevoir" aria-pressed="true"><span><span class="card-name">Gardevoir</span><span class="card-status">Owned</span></span></button>
-    <button class="card owned" type="button" data-card="Froslass" aria-pressed="true"><span><span class="card-name">Froslass</span><span class="card-status">Owned</span></span></button>
-    <button class="card owned" type="button" data-card="Hawlucha" aria-pressed="true"><span><span class="card-name">Hawlucha</span><span class="card-status">Owned</span></span></button>
-    <button class="card owned" type="button" data-card="Diancie" aria-pressed="true"><span><span class="card-name">Diancie</span><span class="card-status">Owned</span></span></button>
-    <button class="card owned" type="button" data-card="Scrafty" aria-pressed="true"><span><span class="card-name">Scrafty</span><span class="card-status">Owned</span></span></button>
-    <button class="card owned" type="button" data-card="Eelektross" aria-pressed="true"><span><span class="card-name">Eelektross</span><span class="card-status">Owned</span></span></button>
-    <button class="card wanted" type="button" data-card="Dragonite" aria-pressed="false"><span><span class="card-name">Dragonite</span><span class="card-status">Wanted</span></span></button>
+    <button class="card owned" type="button" data-card="Gengar" aria-pressed="true"><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/94.png" alt="Gengar"><span><span class="card-name">Gengar</span><span class="card-status">Owned</span></span></button>
+    <button class="card owned" type="button" data-card="Lucario" aria-pressed="true"><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/448.png" alt="Lucario"><span><span class="card-name">Lucario</span><span class="card-status">Owned</span></span></button>
+    <button class="card owned" type="button" data-card="Gardevoir" aria-pressed="true"><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/282.png" alt="Gardevoir"><span><span class="card-name">Gardevoir</span><span class="card-status">Owned</span></span></button>
+    <button class="card owned" type="button" data-card="Froslass" aria-pressed="true"><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/478.png" alt="Froslass"><span><span class="card-name">Froslass</span><span class="card-status">Owned</span></span></button>
+    <button class="card owned" type="button" data-card="Hawlucha" aria-pressed="true"><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/701.png" alt="Hawlucha"><span><span class="card-name">Hawlucha</span><span class="card-status">Owned</span></span></button>
+    <button class="card owned" type="button" data-card="Diancie" aria-pressed="true"><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/719.png" alt="Diancie"><span><span class="card-name">Diancie</span><span class="card-status">Owned</span></span></button>
+    <button class="card owned" type="button" data-card="Scrafty" aria-pressed="true"><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/560.png" alt="Scrafty"><span><span class="card-name">Scrafty</span><span class="card-status">Owned</span></span></button>
+    <button class="card owned" type="button" data-card="Eelektross" aria-pressed="true"><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/604.png" alt="Eelektross"><span><span class="card-name">Eelektross</span><span class="card-status">Owned</span></span></button>
+    <button class="card wanted" type="button" data-card="Dragonite" aria-pressed="false"><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/149.png" alt="Dragonite"><span><span class="card-name">Dragonite</span><span class="card-status">Wanted</span></span></button>
   </main>
   <script>
     const storageKey = "pokemon-binder-state";
     const cards = [...document.querySelectorAll(".card")];
     const progressCount = document.querySelector("#progress-count");
     const progressBar = document.querySelector("#progress-bar");
-    function updateProgress() {
-      const owned = cards.filter(card => card.classList.contains("owned")).length;
-      progressCount.textContent = owned + " of " + cards.length + " owned";
-      progressBar.value = owned;
-      progressBar.setAttribute("aria-label", owned + " of " + cards.length + " cards owned");
-    }
-    function setCardState(card, owned) {
-      card.classList.toggle("owned", owned);
-      card.classList.toggle("wanted", !owned);
-      card.setAttribute("aria-pressed", String(owned));
-      card.querySelector(".card-status").textContent = owned ? "Owned" : "Wanted";
-    }
-    function saveState() {
-      const state = Object.fromEntries(cards.map(card => [card.dataset.card, card.classList.contains("owned")]));
-      localStorage.setItem(storageKey, JSON.stringify(state));
-    }
-    function loadState() {
-      try {
-        const savedState = JSON.parse(localStorage.getItem(storageKey));
-        if (!savedState) return;
-        cards.forEach(card => { if (typeof savedState[card.dataset.card] === "boolean") setCardState(card, savedState[card.dataset.card]); });
-      } catch { localStorage.removeItem(storageKey); }
-    }
+    function updateProgress() { const owned = cards.filter(card => card.classList.contains("owned")).length; progressCount.textContent = owned + " of " + cards.length + " owned"; progressBar.value = owned; progressBar.setAttribute("aria-label", owned + " of " + cards.length + " cards owned"); }
+    function setCardState(card, owned) { card.classList.toggle("owned", owned); card.classList.toggle("wanted", !owned); card.setAttribute("aria-pressed", String(owned)); card.querySelector(".card-status").textContent = owned ? "Owned" : "Wanted"; }
+    function saveState() { const state = Object.fromEntries(cards.map(card => [card.dataset.card, card.classList.contains("owned")])); localStorage.setItem(storageKey, JSON.stringify(state)); }
+    function loadState() { try { const savedState = JSON.parse(localStorage.getItem(storageKey)); if (!savedState) return; cards.forEach(card => { if (typeof savedState[card.dataset.card] === "boolean") setCardState(card, savedState[card.dataset.card]); }); } catch { localStorage.removeItem(storageKey); } }
     cards.forEach(card => card.addEventListener("click", () => { setCardState(card, !card.classList.contains("owned")); saveState(); updateProgress(); }));
-    loadState();
-    updateProgress();
+    loadState(); updateProgress();
   </script>
 </body>
 </html>
