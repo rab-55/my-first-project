@@ -1,60 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>My Pokémon Binder</title>
-  <style>
-    body { background: #14141c; color: white; font-family: Arial, sans-serif; padding: 25px; }
-    h1 { color: #ff4965; }
-    .progress-panel { max-width: 650px; margin: 22px 0; }
-    .progress-row { display: flex; justify-content: space-between; gap: 12px; align-items: center; margin-bottom: 8px; color: #d9d9e5; }
-    .progress-count { color: #ff8da0; font-weight: bold; }
-    progress { width: 100%; height: 12px; accent-color: #ff4965; }
-    .hint { color: #a7a7b8; font-size: .9rem; margin-top: 8px; }
-    .binder { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; max-width: 650px; }
-    .card { appearance: none; -webkit-appearance: none; background: #292939; color: white; border: 2px solid #555; border-radius: 12px; aspect-ratio: 3 / 4; display: grid; place-items: center; text-align: center; padding: 8px; font: inherit; cursor: pointer; transition: transform .15s ease, border-color .15s ease, background .15s ease; }
-    .card:hover, .card:focus-visible { transform: translateY(-3px); border-color: #ff8da0; outline: none; }
-    .card.owned { border-color: #72d6a1; background: #273a38; }
-    .card.wanted { border-color: #ff8da0; }
-    .card img { width: 86%; height: 68%; object-fit: contain; display: block; filter: drop-shadow(0 5px 5px rgba(0,0,0,.35)); }
-    .card-name { display: block; font-weight: bold; }
-    .card-status { display: block; color: #a7a7b8; font-size: .85rem; margin-top: 8px; }
-    .owned .card-status { color: #8de0b2; }
-    .wanted .card-status { color: #ff8da0; }
-    @media (max-width: 560px) { .binder { grid-template-columns: repeat(2, 1fr); } }
-  </style>
-</head>
-<body>
-  <h1>My Pokémon Collection</h1>
-  <p>Welcome to my Japanese Pokémon binder!</p>
-  <section class="progress-panel" aria-label="Collection progress">
-    <div class="progress-row"><span>Collection progress</span><span class="progress-count" id="progress-count">8 of 9 owned</span></div>
-    <progress id="progress-bar" value="8" max="9" aria-label="8 of 9 cards owned"></progress>
-    <p class="hint">Click a card to toggle between Owned and Wanted. Your progress is saved in this browser.</p>
-  </section>
-  <main class="binder" aria-label="Pokémon cards">
-    <button class="card owned" type="button" data-card="Gengar" aria-pressed="true"><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/94.png" alt="Gengar"><span><span class="card-name">Gengar</span><span class="card-status">Owned</span></span></button>
-    <button class="card owned" type="button" data-card="Lucario" aria-pressed="true"><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/448.png" alt="Lucario"><span><span class="card-name">Lucario</span><span class="card-status">Owned</span></span></button>
-    <button class="card owned" type="button" data-card="Gardevoir" aria-pressed="true"><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/282.png" alt="Gardevoir"><span><span class="card-name">Gardevoir</span><span class="card-status">Owned</span></span></button>
-    <button class="card owned" type="button" data-card="Froslass" aria-pressed="true"><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/478.png" alt="Froslass"><span><span class="card-name">Froslass</span><span class="card-status">Owned</span></span></button>
-    <button class="card owned" type="button" data-card="Hawlucha" aria-pressed="true"><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/701.png" alt="Hawlucha"><span><span class="card-name">Hawlucha</span><span class="card-status">Owned</span></span></button>
-    <button class="card owned" type="button" data-card="Diancie" aria-pressed="true"><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/719.png" alt="Diancie"><span><span class="card-name">Diancie</span><span class="card-status">Owned</span></span></button>
-    <button class="card owned" type="button" data-card="Scrafty" aria-pressed="true"><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/560.png" alt="Scrafty"><span><span class="card-name">Scrafty</span><span class="card-status">Owned</span></span></button>
-    <button class="card owned" type="button" data-card="Eelektross" aria-pressed="true"><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/604.png" alt="Eelektross"><span><span class="card-name">Eelektross</span><span class="card-status">Owned</span></span></button>
-    <button class="card wanted" type="button" data-card="Dragonite" aria-pressed="false"><img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/149.png" alt="Dragonite"><span><span class="card-name">Dragonite</span><span class="card-status">Wanted</span></span></button>
-  </main>
-  <script>
-    const storageKey = "pokemon-binder-state";
-    const cards = [...document.querySelectorAll(".card")];
-    const progressCount = document.querySelector("#progress-count");
-    const progressBar = document.querySelector("#progress-bar");
-    function updateProgress() { const owned = cards.filter(card => card.classList.contains("owned")).length; progressCount.textContent = owned + " of " + cards.length + " owned"; progressBar.value = owned; progressBar.setAttribute("aria-label", owned + " of " + cards.length + " cards owned"); }
-    function setCardState(card, owned) { card.classList.toggle("owned", owned); card.classList.toggle("wanted", !owned); card.setAttribute("aria-pressed", String(owned)); card.querySelector(".card-status").textContent = owned ? "Owned" : "Wanted"; }
-    function saveState() { const state = Object.fromEntries(cards.map(card => [card.dataset.card, card.classList.contains("owned")])); localStorage.setItem(storageKey, JSON.stringify(state)); }
-    function loadState() { try { const savedState = JSON.parse(localStorage.getItem(storageKey)); if (!savedState) return; cards.forEach(card => { if (typeof savedState[card.dataset.card] === "boolean") setCardState(card, savedState[card.dataset.card]); }); } catch { localStorage.removeItem(storageKey); } }
-    cards.forEach(card => card.addEventListener("click", () => { setCardState(card, !card.classList.contains("owned")); saveState(); updateProgress(); }));
-    loadState(); updateProgress();
-  </script>
-</body>
-</html>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>My Pokémon Binder</title>
+<style>
+body{background:#14141c;color:white;font-family:Arial,sans-serif;padding:25px}h1{color:#ff4965}.progress-panel{max-width:650px;margin:22px 0}.progress-row{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:8px;color:#d9d9e5}.progress-count{color:#ff8da0;font-weight:bold}progress{width:100%;height:12px;accent-color:#ff4965}.hint{color:#a7a7b8;font-size:.9rem;margin-top:8px}.binder{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:650px}.card{appearance:none;-webkit-appearance:none;background:#292939;color:white;border:2px solid #555;border-radius:12px;aspect-ratio:2.5/3.5;display:grid;place-items:center;text-align:center;padding:8px;font:inherit;cursor:pointer;transition:transform .15s ease,border-color .15s ease,background .15s ease}.card:hover,.card:focus-visible{transform:translateY(-3px);border-color:#ff8da0;outline:none}.card.owned{border-color:#72d6a1;background:#273a38}.card.wanted{border-color:#ff8da0}.card img{width:100%;height:74%;object-fit:contain;display:block;border-radius:6px;filter:drop-shadow(0 5px 5px rgba(0,0,0,.35))}.card-name{display:block;font-weight:bold}.card-status{display:block;color:#a7a7b8;font-size:.85rem;margin-top:8px}.owned .card-status{color:#8de0b2}.wanted .card-status{color:#ff8da0}@media(max-width:560px){.binder{grid-template-columns:repeat(2,1fr)}}
+</style></head>
+<body><h1>My Pokémon Collection</h1><p>Welcome to my Japanese Pokémon binder!</p>
+<section class="progress-panel" aria-label="Collection progress"><div class="progress-row"><span>Collection progress</span><span class="progress-count" id="progress-count">8 of 9 owned</span></div><progress id="progress-bar" value="8" max="9" aria-label="8 of 9 cards owned"></progress><p class="hint">Click a card to toggle between Owned and Wanted. Your progress is saved in this browser.</p></section>
+<main class="binder" aria-label="Pokémon cards">
+<button class="card owned" type="button" data-card="Gengar" aria-pressed="true"><img src="https://cardgamer.com/wp-content/uploads/2025/11/M2a-230-Mega-Gengar-ex-726x1024.jpg" alt="Gengar card scan"><span><span class="card-name">Gengar</span><span class="card-status">Owned</span></span></button>
+<button class="card owned" type="button" data-card="Lucario" aria-pressed="true"><img src="https://cardgamer.com/wp-content/uploads/2025/11/M2a-228-Mega-Lucario-ex-725x1024.jpg" alt="Lucario card scan"><span><span class="card-name">Lucario</span><span class="card-status">Owned</span></span></button>
+<button class="card owned" type="button" data-card="Gardevoir" aria-pressed="true"><img src="https://cardgamer.com/wp-content/uploads/2025/11/M2a-226-Mega-Gallade-ex-726x1024.jpg" alt="Gardevoir card scan"><span><span class="card-name">Gardevoir</span><span class="card-status">Owned</span></span></button>
+<button class="card owned" type="button" data-card="Froslass" aria-pressed="true"><img src="https://cardgamer.com/wp-content/uploads/2025/11/M2a-224-Mega-Froslass-ex-726x1024.jpg" alt="Froslass card scan"><span><span class="card-name">Froslass</span><span class="card-status">Owned</span></span></button>
+<button class="card owned" type="button" data-card="Hawlucha" aria-pressed="true"><img src="https://cardgamer.com/wp-content/uploads/2025/11/M2a-229-Mega-Hawlucha-ex-727x1024.jpg" alt="Hawlucha card scan"><span><span class="card-name">Hawlucha</span><span class="card-status">Owned</span></span></button>
+<button class="card owned" type="button" data-card="Diancie" aria-pressed="true"><img src="https://cardgamer.com/wp-content/uploads/2025/11/M2a-227-Mega-Diancie-ex-726x1024.jpg" alt="Diancie card scan"><span><span class="card-name">Diancie</span><span class="card-status">Owned</span></span></button>
+<button class="card owned" type="button" data-card="Scrafty" aria-pressed="true"><img src="https://cardgamer.com/wp-content/uploads/2025/11/M2a-231-Mega-Scrafty-ex-727x1024.jpg" alt="Scrafty card scan"><span><span class="card-name">Scrafty</span><span class="card-status">Owned</span></span></button>
+<button class="card owned" type="button" data-card="Eelektross" aria-pressed="true"><img src="https://cardgamer.com/wp-content/uploads/2025/11/M2a-225-Mega-Eelektross-ex-726x1024.jpg" alt="Eelektross card scan"><span><span class="card-name">Eelektross</span><span class="card-status">Owned</span></span></button>
+<button class="card wanted" type="button" data-card="Dragonite" aria-pressed="false"><img src="https://cardgamer.com/wp-content/uploads/2025/11/M2a-246-Mega-Dragonite-ex-742x1024.webp" alt="Dragonite card scan"><span><span class="card-name">Dragonite</span><span class="card-status">Wanted</span></span></button>
+</main>
+<script>
+const storageKey="pokemon-binder-state",cards=[...document.querySelectorAll('.card')],progressCount=document.querySelector('#progress-count'),progressBar=document.querySelector('#progress-bar');
+function updateProgress(){const owned=cards.filter(card=>card.classList.contains('owned')).length;progressCount.textContent=owned+' of '+cards.length+' owned';progressBar.value=owned;progressBar.setAttribute('aria-label',owned+' of '+cards.length+' cards owned')}
+function setCardState(card,owned){card.classList.toggle('owned',owned);card.classList.toggle('wanted',!owned);card.setAttribute('aria-pressed',String(owned));card.querySelector('.card-status').textContent=owned?'Owned':'Wanted'}
+function saveState(){localStorage.setItem(storageKey,JSON.stringify(Object.fromEntries(cards.map(card=>[card.dataset.card,card.classList.contains('owned')]))))}
+function loadState(){try{const saved=JSON.parse(localStorage.getItem(storageKey));if(!saved)return;cards.forEach(card=>{if(typeof saved[card.dataset.card]==='boolean')setCardState(card,saved[card.dataset.card])})}catch{localStorage.removeItem(storageKey)}}
+cards.forEach(card=>card.addEventListener('click',()=>{setCardState(card,!card.classList.contains('owned'));saveState();updateProgress()}));loadState();updateProgress();
+</script></body></html>
