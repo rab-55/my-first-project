@@ -1,0 +1,50 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My Pokémon Binder</title>
+  <style>
+    body {
+      background: #14141c;
+      color: white;
+      font-family: Arial, sans-serif;
+      padding: 25px;
+    }
+    h1 { color: #ff4965; }
+    .binder {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      max-width: 650px;
+    }
+    .card {
+      background: #292939;
+      border: 2px solid #555;
+      border-radius: 12px;
+      aspect-ratio: 3 / 4;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 8px;
+    }
+  </style>
+</head>
+<body>
+  <h1>My Pokémon Collection</h1>
+  <p>Welcome to my Japanese Pokémon binder!</p>
+
+  <div class="binder">
+    <div class="card">Gengar</div>
+    <div class="card">Lucario</div>
+    <div class="card">Gardevoir</div>
+    <div class="card">Froslass</div>
+    <div class="card">Hawlucha</div>
+    <div class="card">Diancie</div>
+    <div class="card">Scrafty</div>
+    <div class="card">Eelektross</div>
+    <div class="card">Dragonite - Wanted!</div>
+  </div>
+</body>
+</html>
